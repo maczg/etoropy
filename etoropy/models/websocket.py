@@ -4,8 +4,6 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-# --- Operations ---
-
 
 class WsAuthenticateOperation(BaseModel):
     id: str
@@ -25,8 +23,6 @@ class WsUnsubscribeOperation(BaseModel):
     data: dict[str, list[str]]
 
 
-# --- Message Envelope ---
-
 
 class WsMessage(BaseModel):
     topic: str
@@ -38,8 +34,6 @@ class WsMessage(BaseModel):
 class WsEnvelope(BaseModel):
     messages: list[WsMessage] = []
 
-
-# --- Parsed Event Data ---
 
 
 class WsInstrumentRate(BaseModel):

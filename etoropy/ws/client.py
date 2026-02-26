@@ -30,6 +30,8 @@ logger = logging.getLogger("etoropy")
 
 @dataclass
 class WsClientOptions:
+    """Connection options for :class:`WsClient`."""
+
     api_key: str = ""
     user_key: str = ""
     ws_url: str = DEFAULT_WS_URL
@@ -51,17 +53,19 @@ class WsClient:
     and topic subscription tracking.
 
     Message dispatch uses a lightweight event-emitter pattern:
-    ``on()`` / ``off()`` / ``once()`` / ``_emit()``.
+    :meth:`on` / :meth:`off` / :meth:`once`.
 
     Emitted events::
 
-        "open"           -> ()                     # TCP connection established
-        "authenticated"  -> ()                     # auth handshake succeeded
-        "message"        -> (WsEnvelope)           # raw data envelope
-        "instrument:rate"-> (instrument_id, WsInstrumentRate)
-        "private:event"  -> (WsPrivateEvent)       # order status changes
-        "close"          -> (code, reason)          # connection closed
-        "error"          -> (Exception)
+        "open"            -> ()                     # TCP connection established
+        "authenticated"   -> ()                     # auth handshake succeeded
+        "message"         -> (WsEnvelope)           # raw data envelope
+        "instrument:rate" -> (instrument_id, WsInstrumentRate)
+        "private:event"   -> (WsPrivateEvent)       # order status changes
+        "close"           -> (code, reason)          # connection closed
+        "error"           -> (Exception)
+
+    :param options: Connection and reconnection settings.
     """
 
     def __init__(self, options: WsClientOptions) -> None:
@@ -83,22 +87,22 @@ class WsClient:
         self._heartbeat_task: asyncio.Task[None] | None = None
         self._last_pong_at: float = 0.0
 
-        # Event listeners: event_name -> list of callbacks
         self._listeners: dict[str, list[EventHandler]] = {}
 
-    # --- Event Emitter ---
-
     def on(self, event: str, handler: EventHandler) -> WsClient:
+        """Register *handler* for *event*."""
         self._listeners.setdefault(event, []).append(handler)
         return self
 
     def off(self, event: str, handler: EventHandler) -> WsClient:
+        """Unregister *handler* from *event*."""
         handlers = self._listeners.get(event)
         if handlers and handler in handlers:
             handlers.remove(handler)
         return self
 
     def once(self, event: str, handler: EventHandler) -> WsClient:
+        """Register *handler* for *event*, then auto-unregister after the first call."""
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             self.off(event, wrapper)
             return handler(*args, **kwargs)
@@ -114,29 +118,33 @@ class WsClient:
         return True
 
     def remove_all_listeners(self, event: str | None = None) -> WsClient:
+        """Remove all listeners, or only those for *event* if given."""
         if event:
             self._listeners.pop(event, None)
         else:
             self._listeners.clear()
         return self
 
-    # --- Properties ---
-
     @property
     def last_pong_at(self) -> float:
+        """Timestamp of the last pong received."""
         return self._last_pong_at
 
     @property
     def is_connected(self) -> bool:
+        """Whether the WebSocket connection is open."""
         return self._ws is not None and self._ws.state.name == "OPEN"
 
     @property
     def is_authenticated(self) -> bool:
+        """Whether authentication has completed successfully."""
         return self._authenticated
 
-    # --- Connection ---
-
     async def connect(self) -> None:
+        """Open the WebSocket, authenticate, and start the receive loop.
+
+        :raises EToroAuthError: If authentication fails or times out.
+        """
         self._intentional_close = False
         logger.info("Connecting to %s", self._ws_url)
 
@@ -179,7 +187,6 @@ class WsClient:
         await self._send(auth_msg)
 
         try:
-            # Wait for auth response from the receive loop
             await asyncio.wait_for(auth_event.wait(), timeout=self._auth_timeout)
         except TimeoutError as exc:
             raise EToroAuthError("WebSocket authentication timed out") from exc
@@ -189,9 +196,12 @@ class WsClient:
 
         logger.info("WebSocket authenticated")
 
-    # --- Subscribe/Unsubscribe ---
-
     def subscribe(self, topics: list[str], snapshot: bool = False) -> None:
+        """Subscribe to WebSocket topics.
+
+        :param topics: Topic strings (e.g. ``["instrument:1001", "private"]``).
+        :param snapshot: Request an initial data snapshot on subscribe.
+        """
         self._subscriptions.add(topics)
         msg = {
             "id": generate_uuid(),
@@ -202,6 +212,7 @@ class WsClient:
         asyncio.ensure_future(self._send(msg))
 
     def unsubscribe(self, topics: list[str]) -> None:
+        """Unsubscribe from WebSocket topics."""
         self._subscriptions.remove(topics)
         msg = {
             "id": generate_uuid(),
@@ -211,9 +222,8 @@ class WsClient:
         logger.debug("Unsubscribing from: %s", ", ".join(topics))
         asyncio.ensure_future(self._send(msg))
 
-    # --- Disconnect ---
-
     async def disconnect(self) -> None:
+        """Close the WebSocket connection gracefully."""
         self._intentional_close = True
         if self._receive_task and not self._receive_task.done():
             self._receive_task.cancel()
@@ -225,8 +235,6 @@ class WsClient:
             self._ws = None
         self._authenticated = False
         self._subscriptions.clear()
-
-    # --- Internals ---
 
     async def _receive_loop(self) -> None:
         assert self._ws is not None
@@ -249,7 +257,6 @@ class WsClient:
         try:
             raw = json.loads(data)
 
-            # Auth response
             if raw.get("operation") == "Authenticate" or raw.get("type") == "Authenticate":
                 if raw.get("errorCode"):
                     self._emit("error", EToroAuthError(f"WS auth failed: {raw['errorCode']}"))
@@ -258,7 +265,6 @@ class WsClient:
                 self._emit("authenticated")
                 return
 
-            # Data messages
             if raw.get("messages") and isinstance(raw["messages"], list):
                 envelope = WsEnvelope.model_validate(raw)
                 self._emit("message", envelope)

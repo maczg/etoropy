@@ -4,8 +4,6 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-# --- Feeds ---
-
 
 class CreatePostRequest(BaseModel):
     content: str
@@ -34,8 +32,6 @@ class GetFeedParams(BaseModel):
     page_size: int | None = None
 
 
-# --- Comments ---
-
 
 class CreateCommentRequest(BaseModel):
     post_id: str = Field(alias="postId", serialization_alias="postId")
@@ -52,8 +48,6 @@ class Comment(BaseModel):
     content: str
     created_at: str = Field(alias="createdAt")
 
-
-# --- Users Info ---
 
 
 class UserSearchParams(BaseModel):
@@ -83,8 +77,6 @@ class UserPortfolio(BaseModel):
     positions: list[Any] = []
 
 
-# --- PI Data ---
-
 
 class CopierInfo(BaseModel):
     model_config = {"extra": "allow"}
@@ -92,8 +84,6 @@ class CopierInfo(BaseModel):
     user_id: int = Field(alias="userId")
     copiers_count: int = Field(0, alias="copiersCount")
 
-
-# --- Discovery ---
 
 
 class CuratedList(BaseModel):

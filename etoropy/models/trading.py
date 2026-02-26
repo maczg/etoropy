@@ -4,8 +4,6 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-# --- Order Requests (PascalCase for API) ---
-
 
 class MarketOrderByAmountRequest(BaseModel):
     instrument_id: int = Field(alias="InstrumentID", serialization_alias="InstrumentID")
@@ -50,8 +48,6 @@ class ClosePositionRequest(BaseModel):
     units_to_deduct: float | None = Field(None, alias="UnitsToDeduct", serialization_alias="UnitsToDeduct")
 
 
-# --- Order Responses ---
-
 
 class OrderForOpen(BaseModel):
     instrument_id: int = Field(alias="instrumentID")
@@ -79,8 +75,6 @@ class OrderForOpenResponse(BaseModel):
 class OrderForCloseResponse(BaseModel):
     token: str
 
-
-# --- Order Info ---
 
 
 class OrderPositionInfo(BaseModel):
@@ -114,8 +108,6 @@ class OrderForOpenInfoResponse(BaseModel):
     request_occurred: str = Field("", alias="requestOccurred")
     positions: list[OrderPositionInfo] = []
 
-
-# --- Position ---
 
 
 class Position(BaseModel):
@@ -158,8 +150,6 @@ class Position(BaseModel):
     lot_count: float = Field(0.0, alias="lotCount")
 
 
-# --- Pending Order ---
-
 
 class PendingOrder(BaseModel):
     model_config = {"extra": "allow"}
@@ -178,8 +168,6 @@ class PendingOrder(BaseModel):
     is_tsl_enabled: bool = Field(False, alias="isTslEnabled")
     execution_type: int = Field(0, alias="executionType")
 
-
-# --- Mirror (Copy Trading) ---
 
 
 class Mirror(BaseModel):
@@ -207,8 +195,6 @@ class Mirror(BaseModel):
     orders_for_close_multiple: list[Any] = Field(default_factory=list, alias="ordersForCloseMultiple")
 
 
-# --- Portfolio ---
-
 
 class ClientPortfolio(BaseModel):
     positions: list[Position] = []
@@ -228,8 +214,6 @@ class PortfolioResponse(BaseModel):
 class PnlResponse(BaseModel):
     client_portfolio: ClientPortfolio = Field(alias="clientPortfolio")
 
-
-# --- Trade History ---
 
 
 class TradeHistoryParams(BaseModel):

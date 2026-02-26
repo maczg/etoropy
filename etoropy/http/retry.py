@@ -11,19 +11,18 @@ T = TypeVar("T")
 
 @dataclass
 class RetryOptions:
-    """Configuration for the ``retry()`` helper.
+    """Configuration for the :func:`retry` helper.
 
-    Attributes:
-        attempts: Maximum number of tries (including the first).
-        delay: Base delay in seconds before the first retry.
-        backoff_multiplier: Multiplied to the delay after each attempt.
-        jitter: If True, adds +/-25% random jitter to the computed delay.
-        should_retry: Predicate that receives the exception and returns
-            True if the request should be retried.
-        get_retry_after_s: Optional callback that extracts a server-supplied
-            retry-after delay from the exception (e.g. from a 429 response).
-        on_retry: Optional callback fired before each retry sleep, receiving
-            (attempt_number, wait_seconds, exception).
+    :param attempts: Maximum number of tries (including the first).
+    :param delay: Base delay in seconds before the first retry.
+    :param backoff_multiplier: Multiplied to the delay after each attempt.
+    :param jitter: If ``True``, adds +/-25% random jitter to the computed delay.
+    :param should_retry: Predicate that receives the exception and returns
+        ``True`` if the request should be retried.
+    :param get_retry_after_s: Optional callback that extracts a server-supplied
+        retry-after delay from the exception (e.g. from a 429 response).
+    :param on_retry: Optional callback fired before each retry sleep, receiving
+        ``(attempt_number, wait_seconds, exception)``.
     """
 
     attempts: int = 3

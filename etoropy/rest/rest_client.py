@@ -18,16 +18,15 @@ from .watchlists import WatchlistsClient
 class RestClient:
     """Facade that composes all eToro REST sub-clients.
 
-    Attributes:
-        market_data: Instruments, rates, candles, exchanges (8 endpoints).
-        execution: Open/close/cancel orders (7 endpoints, demo/real routing).
-        info: Portfolio, PnL, order status, trade history (4 endpoints).
-        watchlists: CRUD for watchlists (14 endpoints).
-        feeds: Social feed posts per instrument/user (3 endpoints).
-        reactions: Comment on posts (1 endpoint).
-        discovery: Curated lists and recommendations (2 endpoints).
-        pi_data: Copier public info (1 endpoint).
-        users_info: User profiles, portfolios, performance (6 endpoints).
+    :ivar market_data: Instruments, rates, candles, exchanges (8 endpoints).
+    :ivar execution: Open/close/cancel orders (7 endpoints, demo/real routing).
+    :ivar info: Portfolio, PnL, order status, trade history (4 endpoints).
+    :ivar watchlists: CRUD for watchlists (14 endpoints).
+    :ivar feeds: Social feed posts per instrument/user (3 endpoints).
+    :ivar reactions: Comment on posts (1 endpoint).
+    :ivar discovery: Curated lists and recommendations (2 endpoints).
+    :ivar pi_data: Copier public info (1 endpoint).
+    :ivar users_info: User profiles, portfolios, performance (6 endpoints).
     """
 
     def __init__(self, config: EToroConfig, http: HttpClient | None = None) -> None:

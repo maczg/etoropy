@@ -22,11 +22,10 @@ class RequestContext:
 class EToroApiError(EToroError):
     """HTTP error from the eToro API (4xx/5xx).
 
-    Attributes:
-        status_code: HTTP status code.
-        response_body: Raw response text.
-        request_id: Correlation ID sent with the request.
-        request_context: Method, path, and duration of the failed request.
+    :param status_code: HTTP status code.
+    :param response_body: Raw response text.
+    :param request_id: Correlation ID sent with the request.
+    :param request_context: Method, path, and duration of the failed request.
     """
 
     def __init__(
@@ -55,8 +54,7 @@ class EToroAuthError(EToroError):
 class EToroRateLimitError(EToroApiError):
     """HTTP 429 -- rate limit exceeded.
 
-    Attributes:
-        retry_after_s: Seconds to wait before retrying (from ``Retry-After`` header).
+    :param retry_after_s: Seconds to wait before retrying (from ``Retry-After`` header).
     """
 
     def __init__(

@@ -40,11 +40,10 @@ EventHandler = Callable[..., Any]
 class OrderOptions:
     """Optional parameters for market and limit orders.
 
-    Attributes:
-        leverage: Leverage multiplier (1 = no leverage).
-        stop_loss: Stop-loss rate (absolute price level).
-        take_profit: Take-profit rate (absolute price level).
-        trailing_stop_loss: Enable trailing stop-loss.
+    :param leverage: Leverage multiplier (1 = no leverage).
+    :param stop_loss: Stop-loss rate (absolute price level).
+    :param take_profit: Take-profit rate (absolute price level).
+    :param trailing_stop_loss: Enable trailing stop-loss.
     """
 
     leverage: int = 1
@@ -58,13 +57,13 @@ class EToroTrading:
 
     Wraps REST endpoints, WebSocket streaming, and instrument resolution
     behind a single entry point.  Supports both ``"demo"`` and ``"real"``
-    trading modes (set via ``EToroConfig.mode``).
+    trading modes (set via :attr:`EToroConfig.mode`).
 
     Use as an async context manager for automatic cleanup::
 
         async with EToroTrading() as etoro:
             etoro.resolver.load_bundled_csv()
-            await etoro.connect()             # opens the WebSocket
+            await etoro.connect()
             rates = await etoro.get_rates(["AAPL"])
             ...
         # WebSocket closed, HTTP client released
@@ -77,6 +76,10 @@ class EToroTrading:
         "disconnected"   -> ()
         "error"          -> (Exception)
         "ws:message"     -> (WsEnvelope)
+
+    :param config: SDK configuration. When *None*, settings are read from
+        ``ETORO_``-prefixed environment variables.
+    :param kwargs: Forwarded to :class:`EToroConfig` when *config* is *None*.
     """
 
     def __init__(self, config: EToroConfig | None = None, **kwargs: Any) -> None:
@@ -94,28 +97,27 @@ class EToroTrading:
         )
         self.resolver = InstrumentResolver(self.rest.market_data)
 
-        # Event listeners
         self._listeners: dict[str, list[EventHandler]] = {}
 
-        # Wire WS events to high-level events
         self.ws.on("instrument:rate", self._on_instrument_rate)
         self.ws.on("private:event", self._on_private_event)
         self.ws.on("error", lambda err: self._emit("error", err))
         self.ws.on("message", lambda envelope: self._emit("ws:message", envelope))
 
-    # --- Event Emitter ---
-
     def on(self, event: str, handler: EventHandler) -> EToroTrading:
+        """Register *handler* for *event*."""
         self._listeners.setdefault(event, []).append(handler)
         return self
 
     def off(self, event: str, handler: EventHandler) -> EToroTrading:
+        """Unregister *handler* from *event*."""
         handlers = self._listeners.get(event)
         if handlers and handler in handlers:
             handlers.remove(handler)
         return self
 
     def once(self, event: str, handler: EventHandler) -> EToroTrading:
+        """Register *handler* for *event*, then auto-unregister after the first call."""
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             self.off(event, wrapper)
             return handler(*args, **kwargs)
@@ -131,6 +133,7 @@ class EToroTrading:
         return True
 
     def remove_all_listeners(self, event: str | None = None) -> EToroTrading:
+        """Remove all listeners, or only those for *event* if given."""
         if event:
             self._listeners.pop(event, None)
         else:
@@ -144,12 +147,10 @@ class EToroTrading:
     def _on_private_event(self, event: WsPrivateEvent) -> None:
         self._emit("order:update", event)
 
-    # --- Connection ---
-
     async def connect(self) -> None:
         """Open the WebSocket connection and authenticate.
 
-        Must be called before ``stream_prices()`` or ``wait_for_order()``.
+        Must be called before :meth:`stream_prices` or :meth:`wait_for_order`.
         Emits the ``"connected"`` event on success.
         """
         await self.ws.connect()
@@ -158,14 +159,12 @@ class EToroTrading:
     async def disconnect(self) -> None:
         """Close the WebSocket and release the HTTP client.
 
-        Emits the ``"disconnected"`` event. Called automatically when
+        Emits the ``"disconnected"`` event.  Called automatically when
         exiting the ``async with`` block.
         """
         await self.ws.disconnect()
         await self.rest.aclose()
         self._emit("disconnected")
-
-    # --- Trading: Buy ---
 
     async def buy_by_amount(
         self,
@@ -173,7 +172,13 @@ class EToroTrading:
         amount: float,
         options: OrderOptions | None = None,
     ) -> OrderForOpenResponse:
-        """Open a long (buy) market order for a dollar ``amount``."""
+        """Open a long (buy) market order for a dollar *amount*.
+
+        :param symbol_or_id: Instrument symbol (``"AAPL"``) or numeric ID.
+        :param amount: Dollar amount to invest.
+        :param options: Optional leverage, stop-loss, and take-profit settings.
+        :returns: The order response including the assigned order ID.
+        """
         opts = options or OrderOptions()
         instrument_id = await self.resolver.resolve(symbol_or_id)
         return await self.rest.execution.open_market_order_by_amount(
@@ -194,7 +199,13 @@ class EToroTrading:
         units: float,
         options: OrderOptions | None = None,
     ) -> OrderForOpenResponse:
-        """Open a long (buy) market order for a number of ``units``."""
+        """Open a long (buy) market order for a number of *units*.
+
+        :param symbol_or_id: Instrument symbol or numeric ID.
+        :param units: Number of units to buy.
+        :param options: Optional leverage, stop-loss, and take-profit settings.
+        :returns: The order response including the assigned order ID.
+        """
         opts = options or OrderOptions()
         instrument_id = await self.resolver.resolve(symbol_or_id)
         return await self.rest.execution.open_market_order_by_units(
@@ -209,15 +220,19 @@ class EToroTrading:
             )
         )
 
-    # --- Trading: Sell ---
-
     async def sell_by_amount(
         self,
         symbol_or_id: str | int,
         amount: float,
         options: OrderOptions | None = None,
     ) -> OrderForOpenResponse:
-        """Open a short (sell) market order for a dollar ``amount``."""
+        """Open a short (sell) market order for a dollar *amount*.
+
+        :param symbol_or_id: Instrument symbol or numeric ID.
+        :param amount: Dollar amount to invest.
+        :param options: Optional leverage, stop-loss, and take-profit settings.
+        :returns: The order response including the assigned order ID.
+        """
         opts = options or OrderOptions()
         instrument_id = await self.resolver.resolve(symbol_or_id)
         return await self.rest.execution.open_market_order_by_amount(
@@ -238,7 +253,13 @@ class EToroTrading:
         units: float,
         options: OrderOptions | None = None,
     ) -> OrderForOpenResponse:
-        """Open a short (sell) market order for a number of ``units``."""
+        """Open a short (sell) market order for a number of *units*.
+
+        :param symbol_or_id: Instrument symbol or numeric ID.
+        :param units: Number of units to sell.
+        :param options: Optional leverage, stop-loss, and take-profit settings.
+        :returns: The order response including the assigned order ID.
+        """
         opts = options or OrderOptions()
         instrument_id = await self.resolver.resolve(symbol_or_id)
         return await self.rest.execution.open_market_order_by_units(
@@ -253,10 +274,13 @@ class EToroTrading:
             )
         )
 
-    # --- Trading: Close ---
-
     async def close_position(self, position_id: int, units_to_deduct: float | None = None) -> OrderForCloseResponse:
-        """Close an open position. Pass ``units_to_deduct`` for a partial close."""
+        """Close an open position.
+
+        :param position_id: The position to close.
+        :param units_to_deduct: If given, perform a partial close.
+        :raises EToroValidationError: If *position_id* is not found in the portfolio.
+        """
         portfolio = await self.get_portfolio()
         all_positions = list(portfolio.client_portfolio.positions)
         for mirror in portfolio.client_portfolio.mirrors:
@@ -284,8 +308,6 @@ class EToroTrading:
             )
         )
 
-    # --- Trading: Limit Orders ---
-
     async def place_limit_order(
         self,
         symbol_or_id: str | int,
@@ -294,6 +316,14 @@ class EToroTrading:
         amount: float,
         options: OrderOptions | None = None,
     ) -> TokenResponse:
+        """Place a limit order that triggers at *trigger_rate*.
+
+        :param symbol_or_id: Instrument symbol or numeric ID.
+        :param is_buy: ``True`` for buy, ``False`` for sell.
+        :param trigger_rate: Price at which the order triggers.
+        :param amount: Dollar amount to invest.
+        :param options: Optional leverage, stop-loss, and take-profit settings.
+        """
         opts = options or OrderOptions()
         instrument_id = await self.resolver.resolve(symbol_or_id)
         return await self.rest.execution.open_limit_order(
@@ -310,12 +340,15 @@ class EToroTrading:
         )
 
     async def cancel_order(self, order_id: int) -> TokenResponse:
+        """Cancel a pending market order."""
         return await self.rest.execution.cancel_market_open_order(order_id)
 
     async def cancel_limit_order(self, order_id: int) -> TokenResponse:
+        """Cancel a pending limit order."""
         return await self.rest.execution.cancel_limit_order(order_id)
 
     async def cancel_all_orders(self) -> list[TokenResponse]:
+        """Cancel all pending market orders (runs in parallel)."""
         portfolio = await self.get_portfolio()
         orders = portfolio.client_portfolio.orders_for_open
         return list(
@@ -323,24 +356,27 @@ class EToroTrading:
         )
 
     async def cancel_all_limit_orders(self) -> list[TokenResponse]:
+        """Cancel all pending limit orders (runs in parallel)."""
         portfolio = await self.get_portfolio()
         orders = portfolio.client_portfolio.orders
         return list(await asyncio.gather(*(self.rest.execution.cancel_limit_order(o.order_id) for o in orders)))
 
-    # --- Portfolio ---
-
     async def get_portfolio(self) -> PortfolioResponse:
+        """Fetch the full portfolio (positions, mirrors, pending orders)."""
         return await self.rest.info.get_portfolio()
 
     async def get_positions(self) -> list[Position]:
+        """Fetch all open positions."""
         portfolio = await self.get_portfolio()
         return portfolio.client_portfolio.positions
 
     async def get_pending_orders(self) -> list[PendingOrder]:
+        """Fetch all pending orders (limit orders and orders-for-open)."""
         portfolio = await self.get_portfolio()
         return [*portfolio.client_portfolio.orders, *portfolio.client_portfolio.orders_for_open]
 
     async def get_pnl(self) -> PnlResponse:
+        """Fetch the current profit & loss summary."""
         return await self.rest.info.get_pnl()
 
     async def get_trade_history(
@@ -349,11 +385,16 @@ class EToroTrading:
         page: int | None = None,
         page_size: int | None = None,
     ) -> list[TradeHistoryEntry]:
+        """Fetch closed trade history.
+
+        :param min_date: Earliest date to include (``"YYYY-MM-DD"``).
+        :param page: Page number (1-based).
+        :param page_size: Number of results per page.
+        """
         return await self.rest.info.get_trade_history(min_date, page=page, page_size=page_size)
 
-    # --- Market Data ---
-
     async def get_rates(self, symbols_or_ids: list[str | int]) -> list[InstrumentRate]:
+        """Fetch live bid/ask rates for the given instruments."""
         ids = list(await asyncio.gather(*(self.resolver.resolve(s) for s in symbols_or_ids)))
         response = await self.rest.market_data.get_rates(ids)
         return response.rates
@@ -365,17 +406,25 @@ class EToroTrading:
         count: int,
         direction: CandleDirection = CandleDirection.DESC,
     ) -> CandlesResponse:
+        """Fetch historical candlestick data.
+
+        :param symbol_or_id: Instrument symbol or numeric ID.
+        :param interval: Candle interval (e.g. ``CandleInterval.ONE_DAY``).
+        :param count: Number of candles to fetch (max 1000).
+        :param direction: Sort direction (``ASC`` or ``DESC``).
+        """
         instrument_id = await self.resolver.resolve(symbol_or_id)
         return await self.rest.market_data.get_candles(instrument_id, direction, interval, count)
-
-    # --- Streaming ---
 
     async def stream_prices(self, symbols_or_ids: list[str | int], snapshot: bool = True) -> None:
         """Subscribe to real-time price updates for the given instruments.
 
         Price ticks are emitted as ``"price"`` events with
         ``(symbol, instrument_id, WsInstrumentRate)`` arguments.
-        Requires a prior call to ``connect()``.
+        Requires a prior call to :meth:`connect`.
+
+        :param symbols_or_ids: Instruments to stream.
+        :param snapshot: If ``True``, request an initial snapshot on subscribe.
         """
         ids = list(await asyncio.gather(*(self.resolver.resolve(s) for s in symbols_or_ids)))
         topics = [f"instrument:{id_}" for id_ in ids]
@@ -399,24 +448,17 @@ class EToroTrading:
         """Unsubscribe from private account events."""
         self.ws.unsubscribe(["private"])
 
-    # --- Order Monitoring ---
-
     async def wait_for_order(self, order_id: int, timeout_s: float = 30.0) -> WsPrivateEvent:
-        """Block until an order reaches a terminal state (executed, failed, or cancelled).
+        """Block until an order reaches a terminal state.
 
         Uses a hybrid approach: listens for WebSocket private events
         and, after a 3-second grace period, starts polling the REST
         ``GET /orders/{id}`` endpoint as a fallback.
 
-        Args:
-            order_id: The order ID to monitor.
-            timeout_s: Maximum wait time in seconds before raising ``EToroError``.
-
-        Returns:
-            The ``WsPrivateEvent`` describing the terminal state.
-
-        Raises:
-            EToroError: If the order fails, is cancelled, or times out.
+        :param order_id: The order ID to monitor.
+        :param timeout_s: Maximum wait time in seconds.
+        :returns: The :class:`WsPrivateEvent` describing the terminal state.
+        :raises EToroError: If the order fails, is cancelled, or times out.
         """
         if not self.ws.is_connected:
             raise EToroError("WebSocket not connected -- call connect() before wait_for_order()")
@@ -444,7 +486,6 @@ class EToroTrading:
 
         self.on("order:update", handler)
 
-        # REST polling fallback after 3s
         poll_delay = min(3.0, timeout_s / 2)
 
         async def _poll_fallback() -> None:
@@ -508,35 +549,37 @@ class EToroTrading:
             except EToroError:
                 raise
             except Exception:
-                pass  # 404 etc — keep polling
+                pass  # 404 etc -- keep polling
 
             await asyncio.sleep(poll_interval_s)
             elapsed += poll_interval_s
 
         raise EToroError(f"Timeout waiting for order {order_id} execution after {timeout_s}s")
 
-    # --- Instrument Resolution Helpers ---
-
     async def resolve_instrument(self, symbol_or_id: str | int) -> int:
+        """Resolve an instrument symbol to its numeric ID."""
         return await self.resolver.resolve(symbol_or_id)
 
     async def preload_instruments(self, symbols: list[str]) -> None:
+        """Pre-resolve a list of symbols so later lookups are instant."""
         await self.resolver.preload(symbols)
 
     async def get_display_name(self, symbol_or_id: str | int) -> str:
+        """Return the human-readable display name for an instrument."""
         return await self.resolver.get_display_name(symbol_or_id)
 
     async def get_instrument_info(self, symbol_or_id: str | int) -> InstrumentInfo:
+        """Fetch full metadata for an instrument."""
         return await self.resolver.get_instrument_info(symbol_or_id)
 
     async def get_instrument_info_batch(self, symbols_or_ids: list[str | int]) -> list[InstrumentInfo]:
+        """Fetch metadata for multiple instruments in one call."""
         ids = list(await asyncio.gather(*(self.resolver.resolve(s) for s in symbols_or_ids)))
         return await self.resolver.get_instrument_info_batch(ids)
 
     async def preload_instrument_metadata(self, instrument_ids: list[int]) -> None:
+        """Pre-fetch and cache display metadata for the given instrument IDs."""
         await self.resolver.preload_metadata(instrument_ids)
-
-    # --- Context Manager ---
 
     async def __aenter__(self) -> EToroTrading:
         return self
