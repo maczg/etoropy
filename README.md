@@ -1,9 +1,16 @@
 # etoropy
 
-Python SDK for the [eToro Public API](https://www.etoro.com/). Async-first, fully typed, built for algo trading.
+**Unofficial** Python SDK for the [eToro Public API](https://www.etoro.com/). Async-first, fully typed, built for algo trading.
 
-> [!WARNING]  
-> **Alpha software** ⚠️ This package is under active development and its API may
+> [!NOTE]
+> This is an **unofficial**, community-maintained project. It is **not affiliated
+> with, endorsed by, or in any way officially connected to eToro Group Ltd.** or
+> any of its subsidiaries or affiliates. The name "eToro" and related trademarks
+> are the property of their respective owners and are used here solely to
+> describe the API this library interacts with.
+
+> [!WARNING]
+> **Alpha software** — This package is under active development and its API may
 > change without notice. Use at your own risk. The authors accept no
 > responsibility for any financial losses incurred through the use of this
 > software. Always test thoroughly in demo mode before trading with real funds.
@@ -456,6 +463,11 @@ uv run mypy etoropy/
 ```
 
 ## Disclaimer
+
+This project is **not affiliated with, endorsed by, or officially connected to
+eToro Group Ltd.** or any of its subsidiaries or affiliates. "eToro" is a
+registered trademark of eToro Group Ltd. All trademarks belong to their
+respective owners.
 
 This software is provided "as is", without warranty of any kind. Trading
 financial instruments carries risk. You are solely responsible for any

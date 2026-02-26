@@ -11,7 +11,7 @@ authors = [
 maintainers = [
     { name="Massimo Gollo", email="dev@massimogollo.cloud" },
 ]
-description = "Python SDK for the eToro Public API — algo trading, market data, WebSocket streaming"
+description = "Unofficial Python SDK for the eToro Public API — algo trading, market data, WebSocket streaming"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
