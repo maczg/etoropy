@@ -14,7 +14,7 @@ Create emergency hotfix branch: **$ARGUMENTS**
 - Git status: !`git status --porcelain`
 - Latest production tag: !`git describe --tags --abbrev=0 origin/main 2>/dev/null || echo "No tags on main"`
 - Main branch status: !`git log main..origin/main --oneline 2>/dev/null | head -3 || echo "No remote tracking for main"`
-- Commits on main since last tag: !`git log $(git describe --tags --abbrev=0 origin/main 2>/dev/null)..origin/main --oneline 2>/dev/null | wc -l | tr -d ' '`
+- Recent commits on main: !`git log origin/main --oneline -5 2>/dev/null || echo "No commits found"`
 
 ## Task
 
@@ -118,7 +118,7 @@ This is an EMERGENCY production fix. Follow these steps:
    - Verify no side effects
 
 4. 📝 Document the Fix
-   - Update version in package.json
+   - Update version in pyproject.toml
    - Add entry to CHANGELOG.md
    - Document the bug and fix
    - Include reproduction steps
@@ -132,7 +132,7 @@ This is an EMERGENCY production fix. Follow these steps:
 
 🎯 Next Steps:
 1. Fix the critical issue (MINIMAL changes only)
-2. Test thoroughly: npm test
+2. Test thoroughly: pytest
 3. Update version: v1.2.1
 4. Create emergency PR: gh pr create --label "hotfix,critical"
 5. Get fast-track approval
@@ -187,8 +187,8 @@ Examples:
 **Uncommitted Changes:**
 ```
 ⚠️  Uncommitted changes detected in working directory:
-M  src/file.js
-A  test.js
+M  etoropy/client.py
+A  tests/test_fix.py
 
 Hotfixes require a clean working directory.
 
@@ -279,28 +279,17 @@ Post-Deployment:
 
 ### 7. Version Update Process
 
-After implementing the fix, update the version:
+After implementing the fix, update the version in `pyproject.toml`:
+
+- Read the current `version` field in `pyproject.toml`
+- Increment the PATCH segment (e.g. `0.1.1` → `0.1.2`)
+- Use the Edit tool to update the `version` line in `pyproject.toml`
+- Update `CHANGELOG.md` with the hotfix entry
+- Commit the version bump:
 
 ```bash
-# Update package.json version (PATCH bump)
-npm version patch --no-git-tag-version
-
-# Update CHANGELOG.md
-cat >> CHANGELOG.md << EOF
-
-## [v1.2.1] - $(date +%Y-%m-%d) - HOTFIX
-
-### 🔥 Critical Fixes
-- Fix $ARGUMENTS: [brief description]
-  - Root cause: [explanation]
-  - Impact: [who/what was affected]
-  - Resolution: [what was fixed]
-
-EOF
-
-# Commit version bump
-git add package.json CHANGELOG.md
-git commit -m "chore(hotfix): bump version to v1.2.1
+git add pyproject.toml CHANGELOG.md
+git commit -m "chore(hotfix): bump version to vX.Y.Z
 
 Critical fix for $ARGUMENTS
 
