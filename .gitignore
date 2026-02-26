@@ -1,0 +1,43 @@
+# macOS
+.DS_Store
+
+# Project-specific
+trash/
+
+# JetBrains IDE
+.idea/**
+!.idea/.gitignore
+!.idea/modules.xml
+!.idea/vcs.xml
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Environments
+.env*
+!.env.example
+.venv/
+venv/
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Type checking / linting
+.mypy_cache/
+.ruff_cache/
+
+# uv
+uv.lock
