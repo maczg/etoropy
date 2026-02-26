@@ -22,7 +22,7 @@ from ..config.constants import (
 )
 from ..errors.exceptions import EToroAuthError, EToroWebSocketError
 from ..models.websocket import WsEnvelope
-from .message_parser import parse_messages
+from .message_parser import ParsedInstrumentRate, ParsedPrivateEvent, parse_messages
 from .subscription import WsSubscriptionTracker
 
 logger = logging.getLogger("etoropy")
@@ -103,6 +103,7 @@ class WsClient:
 
     def once(self, event: str, handler: EventHandler) -> WsClient:
         """Register *handler* for *event*, then auto-unregister after the first call."""
+
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             self.off(event, wrapper)
             return handler(*args, **kwargs)
@@ -271,9 +272,9 @@ class WsClient:
 
                 parsed = parse_messages(envelope)
                 for msg in parsed:
-                    if msg.type == "instrument:rate":
+                    if msg.type == "instrument:rate" and isinstance(msg.data, ParsedInstrumentRate):
                         self._emit("instrument:rate", msg.data.instrument_id, msg.data.rate)
-                    elif msg.type == "private:event":
+                    elif msg.type == "private:event" and isinstance(msg.data, ParsedPrivateEvent):
                         self._emit("private:event", msg.data.event)
         except Exception:
             logger.error("Failed to parse WebSocket message: %s", data[:200])

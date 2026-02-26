@@ -23,7 +23,6 @@ class WsUnsubscribeOperation(BaseModel):
     data: dict[str, list[str]]
 
 
-
 class WsMessage(BaseModel):
     topic: str
     content: str
@@ -33,7 +32,6 @@ class WsMessage(BaseModel):
 
 class WsEnvelope(BaseModel):
     messages: list[WsMessage] = []
-
 
 
 class WsInstrumentRate(BaseModel):

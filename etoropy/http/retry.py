@@ -29,7 +29,7 @@ class RetryOptions:
     delay: float = 1.0  # seconds
     backoff_multiplier: float = 2.0
     jitter: bool = True
-    should_retry: Callable[[BaseException], bool] = field(default=lambda: lambda _: False)
+    should_retry: Callable[[BaseException], bool] = field(default_factory=lambda: lambda _: False)
     get_retry_after_s: Callable[[BaseException], float | None] | None = None
     on_retry: Callable[[int, float, BaseException], None] | None = None
 
@@ -50,7 +50,7 @@ async def retry(fn: Callable[[], Any], options: RetryOptions) -> Any:
 
     for attempt in range(options.attempts):
         try:
-            return await fn()  # type: ignore[misc]
+            return await fn()
         except Exception as error:
             last_error = error
             if attempt < options.attempts - 1 and options.should_retry(error):

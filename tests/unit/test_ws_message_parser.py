@@ -8,7 +8,10 @@ def test_parse_instrument_rate() -> None:
             "messages": [
                 {
                     "topic": "instrument:1001",
-                    "content": '{"Ask": 150.25, "Bid": 150.10, "LastExecution": 150.15, "Date": "2024-01-01", "PriceRateID": 123}',
+                    "content": (
+                        '{"Ask": 150.25, "Bid": 150.10, "LastExecution": 150.15,'
+                        ' "Date": "2024-01-01", "PriceRateID": 123}'
+                    ),
                     "id": "msg-1",
                     "type": "rate",
                 }
@@ -29,7 +32,14 @@ def test_parse_private_event() -> None:
             "messages": [
                 {
                     "topic": "private",
-                    "content": '{"OrderID": 100, "OrderType": 1, "StatusID": 3, "InstrumentID": 1001, "CID": 200, "RequestedUnits": 1.0, "ExecutedUnits": 1.0, "NetProfit": 10.0, "CloseReason": "", "OpenDateTime": "2024-01-01", "RequestOccurred": "2024-01-01"}',
+                    "content": (
+                        '{"OrderID": 100, "OrderType": 1, "StatusID": 3,'
+                        ' "InstrumentID": 1001, "CID": 200,'
+                        ' "RequestedUnits": 1.0, "ExecutedUnits": 1.0,'
+                        ' "NetProfit": 10.0, "CloseReason": "",'
+                        ' "OpenDateTime": "2024-01-01",'
+                        ' "RequestOccurred": "2024-01-01"}'
+                    ),
                     "id": "msg-2",
                     "type": "event",
                 }
@@ -62,7 +72,11 @@ def test_parse_unknown_topic() -> None:
 
 
 def test_parse_envelope_from_string() -> None:
-    raw = '{"messages": [{"topic": "instrument:999", "content": "{\\"Ask\\": 50.0, \\"Bid\\": 49.0}", "id": "x", "type": "rate"}]}'
+    raw = (
+        '{"messages": [{"topic": "instrument:999",'
+        ' "content": "{\\"Ask\\": 50.0, \\"Bid\\": 49.0}",'
+        ' "id": "x", "type": "rate"}]}'
+    )
     envelope = parse_envelope(raw)
     assert len(envelope.messages) == 1
     assert envelope.messages[0].topic == "instrument:999"

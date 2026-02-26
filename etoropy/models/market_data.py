@@ -72,9 +72,7 @@ class InstrumentDisplayData(BaseModel):
 
 
 class InstrumentsResponse(BaseModel):
-    instrument_display_datas: list[InstrumentDisplayData] = Field(
-        default_factory=list, alias="instrumentDisplayDatas"
-    )
+    instrument_display_datas: list[InstrumentDisplayData] = Field(default_factory=list, alias="instrumentDisplayDatas")
 
 
 class GetInstrumentsParams(BaseModel):

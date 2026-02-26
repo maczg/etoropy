@@ -2,7 +2,8 @@
 
 Python SDK for the [eToro Public API](https://www.etoro.com/). Async-first, fully typed, built for algo trading.
 
-> **Alpha software** -- This package is under active development and its API may
+> [!WARNING]  
+> **Alpha software** ⚠️ This package is under active development and its API may
 > change without notice. Use at your own risk. The authors accept no
 > responsibility for any financial losses incurred through the use of this
 > software. Always test thoroughly in demo mode before trading with real funds.

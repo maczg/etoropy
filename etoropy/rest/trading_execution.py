@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from ..config.constants import API_PREFIX
 from ..http.client import HttpClient
 from ..models.common import TokenResponse
@@ -51,7 +53,7 @@ class TradingExecutionClient(BaseRestClient):
     async def close_position(
         self, position_id: int, params: ClosePositionRequest | None = None
     ) -> OrderForCloseResponse:
-        body = params if params is not None else {}
+        body: ClosePositionRequest | dict[str, Any] = params if params is not None else {}
         data = await self._post(f"{self._path_prefix}/market-close-orders/positions/{position_id}", body)
         return OrderForCloseResponse.model_validate(data)
 
