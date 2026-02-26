@@ -140,7 +140,7 @@ Status:
 
 Next steps:
   1. Commit your changes
-  2. Run tests: npm test
+  2. Run tests: pytest
   3. Push to remote: git push
   4. When ready: /finish
 ```
@@ -168,12 +168,12 @@ Version analysis:
 
 Checklist:
   ✓ CHANGELOG.md updated
-  ✓ Version in package.json
+  ✓ Version in pyproject.toml
   ⚠️  Tests not run
   ✗ No tag created yet
 
 Next steps:
-  1. Run final tests: npm test
+  1. Run final tests: pytest
   2. Review CHANGELOG.md
   3. Create PR: gh pr create
   4. Get approvals
@@ -323,7 +323,7 @@ Next Steps:
   1. Commit changes: git add . && git commit
   2. Pull updates: git pull
   3. Push commits: git push
-  4. Run tests: npm test
+  4. Run tests: pytest
   5. Finish when ready: /finish
 ```
 

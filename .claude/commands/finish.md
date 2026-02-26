@@ -15,7 +15,7 @@ Complete current Git Flow branch: **$ARGUMENTS**
 - Git status: !`git status --porcelain`
 - Unpushed commits: !`git log @{u}.. --oneline 2>/dev/null | wc -l | tr -d ' '`
 - Latest tag: !`git describe --tags --abbrev=0 2>/dev/null || echo "No tags"`
-- Test status: !`npm test 2>/dev/null | tail -20 || echo "No test command available"`
+- Test status: !`python -m pytest --co -q 2>/dev/null | tail -5 || echo "No test command available"`
 
 ## Task
 
@@ -321,8 +321,8 @@ To finish this branch manually:
 ❌ Cannot finish: Uncommitted changes detected
 
 Modified files:
-M  src/file1.js
-M  src/file2.js
+M  etoropy/client.py
+M  etoropy/models.py
 
 Please commit or stash your changes first:
 1. Commit: git add . && git commit
@@ -349,13 +349,13 @@ Would you like to push now? [Y/n]
 ❌ Cannot finish: Tests are failing
 
 Failed tests:
-  ✗ UserService.test.js
-    - should authenticate user (expected 200, got 401)
-  ✗ PaymentController.test.js
-    - should process payment (timeout)
+  ✗ tests/test_client.py::test_authenticate
+    - AssertionError: expected 200, got 401
+  ✗ tests/test_api.py::test_request_timeout
+    - TimeoutError
 
 Fix the failing tests before finishing:
-1. Run tests: npm test
+1. Run tests: pytest
 2. Fix failures
 3. Commit fixes
 4. Try /finish again
@@ -368,8 +368,8 @@ Skip tests? (NOT RECOMMENDED) [y/N]
 ❌ Merge conflict detected with develop
 
 Conflicting files:
-  src/config.js
-  package.json
+  etoropy/config.py
+  pyproject.toml
 
 Resolution steps:
 1. Fetch latest develop: git fetch origin develop
