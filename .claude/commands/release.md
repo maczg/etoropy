@@ -13,8 +13,8 @@ Create new release branch: **$ARGUMENTS**
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --porcelain`
 - Latest tag: !`git describe --tags --abbrev=0 2>/dev/null || echo "No tags found"`
-- Commits since last tag: !`git log $(git describe --tags --abbrev=0 2>/dev/null)..HEAD --oneline 2>/dev/null | wc -l | tr -d ' '`
-- Package.json version: !`cat package.json 2>/dev/null | grep '"version"' | head -1 || echo "No package.json found"`
+- Recent commits: !`git log --oneline -10 2>/dev/null || echo "No commits found"`
+- pyproject.toml version: !`grep '^version' pyproject.toml 2>/dev/null || echo "No pyproject.toml found"`
 - Recent commits: !`git log --oneline -10`
 
 ## Task
@@ -70,17 +70,17 @@ git pull origin develop
 # Create release branch
 git checkout -b release/$ARGUMENTS
 
-# Update package.json version (if Node.js project)
-npm version ${ARGUMENTS#v} --no-git-tag-version
+# Update version in pyproject.toml
+# Use Edit tool to update the `version` field in pyproject.toml
 
 # Generate CHANGELOG.md from commits
 # (analyze git log since last tag)
 
 # Commit version bump
-git add package.json CHANGELOG.md
+git add pyproject.toml CHANGELOG.md
 git commit -m "chore(release): bump version to ${ARGUMENTS#v}
 
-- Updated package.json version
+- Updated pyproject.toml version
 - Generated CHANGELOG.md from commits
 
 🤖 Generated with Claude Code
@@ -135,18 +135,18 @@ Display this checklist after creation:
 🚀 Release Checklist for $ARGUMENTS
 
 Pre-Release Tasks:
-- [ ] All tests passing (run: npm test)
+- [ ] All tests passing (run: pytest)
 - [ ] Documentation updated
 - [ ] CHANGELOG.md reviewed and accurate
 - [ ] Version numbers consistent across files
 - [ ] No breaking changes (or properly documented)
-- [ ] Dependencies updated (run: npm audit)
+- [ ] Dependencies reviewed
 
 Testing Tasks:
 - [ ] Manual testing completed
 - [ ] Regression tests passed
 - [ ] Performance benchmarks acceptable
-- [ ] Security scan clean (run: npm audit)
+- [ ] Security scan clean
 - [ ] Cross-browser testing (if applicable)
 
 Deployment Preparation:
@@ -163,7 +163,7 @@ Final Steps:
 
 🎯 Next Commands:
 - Review CHANGELOG: cat CHANGELOG.md
-- Run tests: npm test
+- Run tests: pytest
 - Create PR: gh pr create --base main --head release/$ARGUMENTS
 - When ready: /finish
 ```
@@ -174,7 +174,7 @@ Final Steps:
 ✓ Switched to develop branch
 ✓ Pulled latest changes from origin/develop
 ✓ Created branch: release/$ARGUMENTS
-✓ Updated package.json version to ${ARGUMENTS#v}
+✓ Updated pyproject.toml version to ${ARGUMENTS#v}
 ✓ Generated CHANGELOG.md (15 commits analyzed)
 ✓ Committed version bump changes
 ✓ Set up remote tracking: origin/release/$ARGUMENTS
@@ -201,7 +201,7 @@ Target: main (after review)
 
 🎯 Next Steps:
 1. Review CHANGELOG.md for accuracy
-2. Run final tests: npm test
+2. Run final tests: pytest
 3. Test on staging environment
 4. Create PR to main: gh pr create
 5. Get team approvals

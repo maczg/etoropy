@@ -159,8 +159,8 @@ class WsClient:
         logger.info("WebSocket connected")
         self._emit("open")
 
-        await self._authenticate()
         self._receive_task = asyncio.create_task(self._receive_loop())
+        await self._authenticate()
 
     async def _authenticate(self) -> None:
         auth_msg = {
@@ -241,7 +241,9 @@ class WsClient:
         assert self._ws is not None
         try:
             async for raw in self._ws:
-                self._handle_message(str(raw))
+                if isinstance(raw, bytes):
+                    continue
+                self._handle_message(raw)
         except websockets.ConnectionClosed as exc:
             logger.info("WebSocket closed: %d %s", exc.code, exc.reason)
             self._authenticated = False
