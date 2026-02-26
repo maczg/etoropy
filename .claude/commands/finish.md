@@ -60,6 +60,7 @@ Before merging, validate these conditions:
 - ✅ Tests are passing (run test suite)
 - ✅ No merge conflicts with target branch
 - ✅ Branch is up to date with remote
+- ✅ **Version bumped in `pyproject.toml`** (for release and hotfix branches)
 
 ```
 🔍 Pre-Merge Validation
@@ -140,11 +141,17 @@ Next steps:
 
 For **release/** branches:
 
-```bash
-# Extract version from branch name
-VERSION="${CURRENT_BRANCH#release/}"
+**IMPORTANT — Version Bump (before merging):**
 
-# Ensure all commits are pushed
+1. Extract the version from the branch name (e.g. `release/v1.2.0` → `1.2.0`)
+2. Read `pyproject.toml` and verify the `version` field matches the release version (without the `v` prefix)
+3. If it doesn't match, use the Edit tool to update `pyproject.toml`, commit, and push
+4. Verify the version bump is committed before proceeding
+
+Then proceed with the merge:
+
+```bash
+# Ensure all commits are pushed (including version bump)
 git push
 
 # Merge to main first
@@ -219,12 +226,17 @@ Tag details:
 
 For **hotfix/** branches:
 
-```bash
-# Determine new version (patch bump)
-CURRENT_VERSION=$(git describe --tags --abbrev=0 origin/main)
-NEW_VERSION="${CURRENT_VERSION%.*}.$((${CURRENT_VERSION##*.} + 1))"
+**IMPORTANT — Version Bump (before merging):**
 
-# Ensure all commits are pushed
+1. Determine the new version: read the latest tag on main, increment the PATCH segment (e.g. `v0.1.1` → `v0.1.2`)
+2. Use the Edit tool to update the `version` field in `pyproject.toml` on the hotfix branch
+3. Commit: `git add pyproject.toml && git commit -m "chore(hotfix): bump version to X.Y.Z"`
+4. Push: `git push`
+
+Then proceed with the merge:
+
+```bash
+# Ensure all commits are pushed (including version bump)
 git push
 
 # Merge to main first
