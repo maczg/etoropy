@@ -3,6 +3,8 @@
 
 # Project-specific
 trash/
+# Ignore notebook that start with an underscore, which are used for testing and development purposes
+notebooks/_*.ipynb
 
 # JetBrains IDE
 .idea/**
