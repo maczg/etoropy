@@ -73,15 +73,15 @@ git checkout -b release/$ARGUMENTS
 # Update version in pyproject.toml
 # Use Edit tool to update the `version` field in pyproject.toml
 
-# Generate CHANGELOG.md from commits
+# Generate docs/changelog.rst from commits
 # (analyze git log since last tag)
 
 # Commit version bump
-git add pyproject.toml CHANGELOG.md
+git add pyproject.toml docs/changelog.rst
 git commit -m "chore(release): bump version to ${ARGUMENTS#v}
 
 - Updated pyproject.toml version
-- Generated CHANGELOG.md from commits
+- Generated docs/changelog.rst from commits
 
 🤖 Generated with Claude Code
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -137,7 +137,7 @@ Display this checklist after creation:
 Pre-Release Tasks:
 - [ ] All tests passing (run: pytest)
 - [ ] Documentation updated
-- [ ] CHANGELOG.md reviewed and accurate
+- [ ] docs/changelog.rst reviewed and accurate
 - [ ] Version numbers consistent across files
 - [ ] No breaking changes (or properly documented)
 - [ ] Dependencies reviewed
@@ -162,7 +162,7 @@ Final Steps:
 - [ ] Announce release to team
 
 🎯 Next Commands:
-- Review CHANGELOG: cat CHANGELOG.md
+- Review CHANGELOG: cat docs/changelog.rst
 - Run tests: pytest
 - Create PR: gh pr create --base main --head release/$ARGUMENTS
 - When ready: /finish
@@ -175,7 +175,7 @@ Final Steps:
 ✓ Pulled latest changes from origin/develop
 ✓ Created branch: release/$ARGUMENTS
 ✓ Updated pyproject.toml version to ${ARGUMENTS#v}
-✓ Generated CHANGELOG.md (15 commits analyzed)
+✓ Generated docs/changelog.rst (15 commits analyzed)
 ✓ Committed version bump changes
 ✓ Set up remote tracking: origin/release/$ARGUMENTS
 ✓ Pushed branch to remote
@@ -200,7 +200,7 @@ Target: main (after review)
   - Ready for review
 
 🎯 Next Steps:
-1. Review CHANGELOG.md for accuracy
+1. Review docs/changelog.rst for accuracy
 2. Run final tests: pytest
 3. Test on staging environment
 4. Create PR to main: gh pr create
@@ -302,7 +302,7 @@ Target: main
 
 ## Changes Included
 
-[Auto-generated from CHANGELOG.md]
+[Auto-generated from docs/changelog.rst]
 
 ## Release Checklist
 

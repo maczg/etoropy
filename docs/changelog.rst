@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v0.1.2 (2026-02-26)
+--------------------
+
+- Fix WebSocket auth deadlock: start receive loop before ``_authenticate()``
+- Fix binary frame handling: skip bytes messages, pass text directly without
+  ``str()`` wrapping
+- Add 15 unit tests for ``WsClient`` (event emitter, auth flow, binary frames,
+  disconnect, error paths)
+- Migrate ``.claude/commands/`` templates from npm/Node.js to Python tooling
+
 v0.1.1 (2026-02-26)
 --------------------
 

@@ -167,14 +167,14 @@ Version analysis:
   Increment: MINOR (new features)
 
 Checklist:
-  ✓ CHANGELOG.md updated
+  ✓ docs/changelog.rst updated
   ✓ Version in pyproject.toml
   ⚠️  Tests not run
   ✗ No tag created yet
 
 Next steps:
   1. Run final tests: pytest
-  2. Review CHANGELOG.md
+  2. Review docs/changelog.rst
   3. Create PR: gh pr create
   4. Get approvals
   5. Finish release: /finish

@@ -119,7 +119,7 @@ This is an EMERGENCY production fix. Follow these steps:
 
 4. 📝 Document the Fix
    - Update version in pyproject.toml
-   - Add entry to CHANGELOG.md
+   - Add entry to docs/changelog.rst
    - Document the bug and fix
    - Include reproduction steps
 
@@ -255,7 +255,7 @@ Testing:
 - [ ] No side effects detected
 
 Documentation:
-- [ ] CHANGELOG.md updated
+- [ ] docs/changelog.rst updated
 - [ ] Version bumped (PATCH)
 - [ ] Bug description documented
 - [ ] Fix explanation documented
@@ -284,11 +284,11 @@ After implementing the fix, update the version in `pyproject.toml`:
 - Read the current `version` field in `pyproject.toml`
 - Increment the PATCH segment (e.g. `0.1.1` → `0.1.2`)
 - Use the Edit tool to update the `version` line in `pyproject.toml`
-- Update `CHANGELOG.md` with the hotfix entry
+- Update `docs/changelog.rst` with the hotfix entry
 - Commit the version bump:
 
 ```bash
-git add pyproject.toml CHANGELOG.md
+git add pyproject.toml docs/changelog.rst
 git commit -m "chore(hotfix): bump version to vX.Y.Z
 
 Critical fix for $ARGUMENTS

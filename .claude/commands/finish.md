@@ -160,7 +160,7 @@ git pull origin main
 git merge --no-ff release/$VERSION -m "Merge release/$VERSION into main
 
 Release notes:
-$(cat CHANGELOG.md | sed -n "/## \[$VERSION\]/,/## \[/p" | head -n -1)
+$(cat docs/changelog.rst | sed -n "/## \[$VERSION\]/,/## \[/p" | head -n -1)
 
 🤖 Generated with Claude Code
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -168,7 +168,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 # Create tag on main (unless --no-tag)
 git tag -a $VERSION -m "Release $VERSION
 
-$(cat CHANGELOG.md | sed -n "/## \[$VERSION\]/,/## \[/p" | head -n -1)"
+$(cat docs/changelog.rst | sed -n "/## \[$VERSION\]/,/## \[/p" | head -n -1)"
 
 # Push main with tags
 git push origin main --tags
@@ -397,13 +397,13 @@ Would you like to see conflict details? [Y/n]
 ```
 ⚠️  Release branch missing version in CHANGELOG
 
-Expected format in CHANGELOG.md:
+Expected format in docs/changelog.rst:
 ## [v1.2.0] - 2025-10-01
 
 Current CHANGELOG:
 [show relevant section]
 
-Please update CHANGELOG.md with release version.
+Please update docs/changelog.rst with release version.
 Continue anyway? [y/N]
 ```
 
