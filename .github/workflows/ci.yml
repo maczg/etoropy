@@ -51,3 +51,38 @@ jobs:
 
       - run: uv sync --frozen --all-extras
       - run: uv run pytest
+
+  publish-dev:
+    name: Publish dev build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    environment: testpypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set dev version
+        run: |
+          base=$(python -c "
+          import re, pathlib
+          text = pathlib.Path('pyproject.toml').read_text()
+          print(re.search(r'version\s*=\s*\"(.+?)\"', text).group(1))
+          ")
+          echo "DEV_VERSION=${base}.dev${{ github.run_number }}"
+          sed -i "s/^version = \".*\"/version = \"${base}.dev${{ github.run_number }}\"/" pyproject.toml
+
+      - run: uv build
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
