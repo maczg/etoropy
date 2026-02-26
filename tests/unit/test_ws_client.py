@@ -198,7 +198,10 @@ async def test_auth_timeout_raises() -> None:
     async def fake_connect(*_a: object, **_kw: object) -> AsyncMock:
         return mock_conn
 
-    with patch("websockets.asyncio.client.connect", side_effect=fake_connect), pytest.raises(EToroAuthError, match="timed out"):
+    with (
+        patch("websockets.asyncio.client.connect", side_effect=fake_connect),
+        pytest.raises(EToroAuthError, match="timed out"),
+    ):
         await ws.connect()
 
 
