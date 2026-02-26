@@ -38,6 +38,7 @@ def test_on_and_emit() -> None:
 def test_off_removes_handler() -> None:
     ws = _make_client()
     received: list[int] = []
+
     def handler(v: int) -> None:
         received.append(v)
 
