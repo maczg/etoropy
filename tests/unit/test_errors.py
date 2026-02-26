@@ -1,5 +1,3 @@
-import pytest
-
 from etoropy.errors.exceptions import (
     EToroApiError,
     EToroAuthError,

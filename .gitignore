@@ -39,5 +39,3 @@ coverage.xml
 .mypy_cache/
 .ruff_cache/
 
-# uv
-uv.lock

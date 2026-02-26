@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 from ..config.constants import API_PREFIX
 from ._base import BaseRestClient
@@ -8,13 +8,13 @@ from ._base import BaseRestClient
 
 class WatchlistsClient(BaseRestClient):
     async def get_user_watchlists(self) -> list[Any]:
-        return await self._get(f"{API_PREFIX}/watchlists")
+        return cast(list[Any], await self._get(f"{API_PREFIX}/watchlists"))
 
     async def get_watchlist(self, watchlist_id: int) -> Any:
         return await self._get(f"{API_PREFIX}/watchlists/{watchlist_id}")
 
     async def get_default_watchlist_items(self) -> list[Any]:
-        return await self._get(f"{API_PREFIX}/watchlists/default/items")
+        return cast(list[Any], await self._get(f"{API_PREFIX}/watchlists/default/items"))
 
     async def create_watchlist(self, name: str, items: list[int] | None = None) -> Any:
         body: dict[str, Any] = {"name": name}
@@ -50,7 +50,7 @@ class WatchlistsClient(BaseRestClient):
         await self._put(f"{API_PREFIX}/watchlists/{watchlist_id}/rank", {"rank": rank})
 
     async def get_public_watchlists(self, user_id: int) -> list[Any]:
-        return await self._get(f"{API_PREFIX}/watchlists/users/{user_id}/public")
+        return cast(list[Any], await self._get(f"{API_PREFIX}/watchlists/users/{user_id}/public"))
 
     async def get_public_watchlist(self, watchlist_id: int) -> Any:
         return await self._get(f"{API_PREFIX}/watchlists/public/{watchlist_id}")

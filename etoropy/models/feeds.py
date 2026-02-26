@@ -32,7 +32,6 @@ class GetFeedParams(BaseModel):
     page_size: int | None = None
 
 
-
 class CreateCommentRequest(BaseModel):
     post_id: str = Field(alias="postId", serialization_alias="postId")
     content: str
@@ -47,7 +46,6 @@ class Comment(BaseModel):
     username: str
     content: str
     created_at: str = Field(alias="createdAt")
-
 
 
 class UserSearchParams(BaseModel):
@@ -77,13 +75,11 @@ class UserPortfolio(BaseModel):
     positions: list[Any] = []
 
 
-
 class CopierInfo(BaseModel):
     model_config = {"extra": "allow"}
 
     user_id: int = Field(alias="userId")
     copiers_count: int = Field(0, alias="copiersCount")
-
 
 
 class CuratedList(BaseModel):

@@ -118,6 +118,7 @@ class EToroTrading:
 
     def once(self, event: str, handler: EventHandler) -> EToroTrading:
         """Register *handler* for *event*, then auto-unregister after the first call."""
+
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             self.off(event, wrapper)
             return handler(*args, **kwargs)
@@ -351,9 +352,7 @@ class EToroTrading:
         """Cancel all pending market orders (runs in parallel)."""
         portfolio = await self.get_portfolio()
         orders = portfolio.client_portfolio.orders_for_open
-        return list(
-            await asyncio.gather(*(self.rest.execution.cancel_market_open_order(o.order_id) for o in orders))
-        )
+        return list(await asyncio.gather(*(self.rest.execution.cancel_market_open_order(o.order_id) for o in orders)))
 
     async def cancel_all_limit_orders(self) -> list[TokenResponse]:
         """Cancel all pending limit orders (runs in parallel)."""
@@ -479,9 +478,7 @@ class EToroTrading:
                 status_name = OrderStatusId(event.status_id).name
                 reason = event.error_message or event.close_reason or "unknown reason"
                 event_future.set_exception(
-                    EToroError(
-                        f"Order {order_id} {status_name}: {reason} (errorCode: {event.error_code or 'none'})"
-                    )
+                    EToroError(f"Order {order_id} {status_name}: {reason} (errorCode: {event.error_code or 'none'})")
                 )
 
         self.on("order:update", handler)
@@ -543,9 +540,7 @@ class EToroTrading:
                     return info
                 if info.status_id in (OrderStatusId.CANCELLED, OrderStatusId.FAILED):
                     status_name = OrderStatusId(info.status_id).name
-                    raise EToroError(
-                        f"Order {order_id} was {status_name}: {info.error_message or 'unknown reason'}"
-                    )
+                    raise EToroError(f"Order {order_id} was {status_name}: {info.error_message or 'unknown reason'}")
             except EToroError:
                 raise
             except Exception:

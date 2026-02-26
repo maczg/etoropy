@@ -1,13 +1,10 @@
 from etoropy.models.market_data import (
     InstrumentRate,
-    InstrumentSearchItem,
     InstrumentSearchResponse,
-    LiveRatesResponse,
 )
 from etoropy.models.trading import (
     ClosePositionRequest,
     MarketOrderByAmountRequest,
-    OrderForOpen,
     OrderForOpenResponse,
     PendingOrder,
     Position,

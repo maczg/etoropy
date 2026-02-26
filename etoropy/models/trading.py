@@ -48,7 +48,6 @@ class ClosePositionRequest(BaseModel):
     units_to_deduct: float | None = Field(None, alias="UnitsToDeduct", serialization_alias="UnitsToDeduct")
 
 
-
 class OrderForOpen(BaseModel):
     instrument_id: int = Field(alias="instrumentID")
     amount: float
@@ -74,7 +73,6 @@ class OrderForOpenResponse(BaseModel):
 
 class OrderForCloseResponse(BaseModel):
     token: str
-
 
 
 class OrderPositionInfo(BaseModel):
@@ -107,7 +105,6 @@ class OrderForOpenInfoResponse(BaseModel):
     units: float
     request_occurred: str = Field("", alias="requestOccurred")
     positions: list[OrderPositionInfo] = []
-
 
 
 class Position(BaseModel):
@@ -150,7 +147,6 @@ class Position(BaseModel):
     lot_count: float = Field(0.0, alias="lotCount")
 
 
-
 class PendingOrder(BaseModel):
     model_config = {"extra": "allow"}
 
@@ -167,7 +163,6 @@ class PendingOrder(BaseModel):
     units: float
     is_tsl_enabled: bool = Field(False, alias="isTslEnabled")
     execution_type: int = Field(0, alias="executionType")
-
 
 
 class Mirror(BaseModel):
@@ -195,7 +190,6 @@ class Mirror(BaseModel):
     orders_for_close_multiple: list[Any] = Field(default_factory=list, alias="ordersForCloseMultiple")
 
 
-
 class ClientPortfolio(BaseModel):
     positions: list[Position] = []
     credit: float = 0.0
@@ -213,7 +207,6 @@ class PortfolioResponse(BaseModel):
 
 class PnlResponse(BaseModel):
     client_portfolio: ClientPortfolio = Field(alias="clientPortfolio")
-
 
 
 class TradeHistoryParams(BaseModel):
