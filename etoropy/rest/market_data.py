@@ -26,6 +26,7 @@ class MarketDataClient(BaseRestClient):
     one request per instrument ID using ``asyncio.gather()``, because the
     eToro API returns 500 when multiple IDs are comma-separated.
     """
+
     async def search_instruments(
         self,
         fields: str,
