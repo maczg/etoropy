@@ -38,7 +38,9 @@ def test_on_and_emit() -> None:
 def test_off_removes_handler() -> None:
     ws = _make_client()
     received: list[int] = []
-    handler = lambda v: received.append(v)
+    def handler(v: int) -> None:
+        received.append(v)
+
     ws.on("ping", handler)
     ws.off("ping", handler)
     ws._emit("ping", 1)
@@ -116,8 +118,6 @@ async def test_connect_starts_receive_loop_before_auth() -> None:
     otherwise the auth response is never processed (deadlock)."""
     ws = _make_client()
     call_order: list[str] = []
-
-    original_authenticate = ws._authenticate
 
     async def fake_ws_connect(*_a: object, **_kw: object) -> AsyncMock:
         mock_conn = AsyncMock()
@@ -198,9 +198,8 @@ async def test_auth_timeout_raises() -> None:
     async def fake_connect(*_a: object, **_kw: object) -> AsyncMock:
         return mock_conn
 
-    with patch("websockets.asyncio.client.connect", side_effect=fake_connect):
-        with pytest.raises(EToroAuthError, match="timed out"):
-            await ws.connect()
+    with patch("websockets.asyncio.client.connect", side_effect=fake_connect), pytest.raises(EToroAuthError, match="timed out"):
+        await ws.connect()
 
 
 # ── _receive_loop: binary message handling ───────────────────────────
