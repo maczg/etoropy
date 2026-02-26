@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.1.1 (2026-02-26)
+--------------------
+
+- Add Sphinx documentation site with Furo theme and autodoc API reference
+- Add quickstart, architecture, and examples guides
+- Add GitHub Actions workflow for automatic docs deploy to GitHub Pages
+
 v0.1.0 (2025)
 --------------
 
