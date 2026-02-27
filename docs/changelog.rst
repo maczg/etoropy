@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v0.1.4 (2026-02-27)
+--------------------
+
+- Fix ``ValidationError`` on candle volume: allow ``None`` from API responses
+  where volume data is unavailable
+
 v0.1.3 (2026-02-27)
 --------------------
 

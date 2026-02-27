@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "etoropy"
-version = "0.1.3"
+version = "0.1.4"
 authors = [
     { name="Massimo Gollo", email="dev@massimogollo.cloud" },
 ]
 maintainers = [
     { name="Massimo Gollo", email="dev@massimogollo.cloud" },
 ]
-description = "Python SDK for the eToro Public API — algo trading, market data, WebSocket streaming"
+description = "Unofficial Python SDK for the eToro Public API — algo trading, market data, WebSocket streaming"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
