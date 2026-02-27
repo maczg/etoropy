@@ -113,7 +113,7 @@ class Candle(BaseModel):
     high: float
     low: float
     close: float
-    volume: float = 0.0
+    volume: float | None = 0.0
 
 
 class CandleGroup(BaseModel):
@@ -123,7 +123,7 @@ class CandleGroup(BaseModel):
     range_close: float = Field(0.0, alias="rangeClose")
     range_high: float = Field(0.0, alias="rangeHigh")
     range_low: float = Field(0.0, alias="rangeLow")
-    volume: float = 0.0
+    volume: float | None = 0.0
 
 
 class CandlesResponse(BaseModel):
