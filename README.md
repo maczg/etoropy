@@ -1,5 +1,11 @@
 # etoropy
 
+[![PyPI version](https://img.shields.io/pypi/v/etoropy)](https://pypi.org/project/etoropy/)
+[![TestPyPI version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ftest.pypi.org%2Fpypi%2Fetoropy%2Fjson&query=%24.info.version&label=TestPyPI&color=orange)](https://test.pypi.org/project/etoropy/)
+[![Python](https://img.shields.io/pypi/pyversions/etoropy)](https://pypi.org/project/etoropy/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://img.shields.io/pypi/dm/etoropy)](https://pypi.org/project/etoropy/)
+
 **Unofficial** Python SDK for the [eToro Public API](https://www.etoro.com/). Async-first, fully typed, built for algo trading.
 
 > [!NOTE]
