@@ -154,7 +154,10 @@ class MarketDataClient(BaseRestClient):
         return InstrumentTypesResponse.model_validate(data)
 
     async def get_closing_prices(self) -> ClosingPricesResponse:
-        data = await self._get(f"{API_PREFIX}/market-data/instruments/closing-prices")
+        data = await self._get(f"{API_PREFIX}/market-data/instruments/history/closing-price")
+        # API returns a bare array; wrap it for the response model
+        if isinstance(data, list):
+            return ClosingPricesResponse(closing_prices=data)
         return ClosingPricesResponse.model_validate(data)
 
     async def get_stocks_industries(self) -> StocksIndustriesResponse:
