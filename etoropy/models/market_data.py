@@ -51,9 +51,9 @@ class InstrumentImage(BaseModel):
     instrument_id: int = Field(alias="instrumentID")
     width: int | None = None
     height: int | None = None
-    uri: str
-    background_color: str = Field("", alias="backgroundColor")
-    text_color: str = Field("", alias="textColor")
+    uri: str | None = None
+    background_color: str | None = Field(None, alias="backgroundColor")
+    text_color: str | None = Field(None, alias="textColor")
 
 
 class InstrumentDisplayData(BaseModel):
