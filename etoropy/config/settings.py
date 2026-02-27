@@ -7,6 +7,8 @@ from pydantic_settings import BaseSettings
 
 from .constants import (
     DEFAULT_BASE_URL,
+    DEFAULT_RATE_LIMIT_MAX_REQUESTS,
+    DEFAULT_RATE_LIMIT_WINDOW,
     DEFAULT_RETRY_ATTEMPTS,
     DEFAULT_RETRY_DELAY,
     DEFAULT_TIMEOUT,
@@ -28,6 +30,9 @@ class EToroConfig(BaseSettings):
     :param timeout: HTTP request timeout in seconds.
     :param retry_attempts: Max retries on transient failures (0 = no retry).
     :param retry_delay: Base delay in seconds between retries.
+    :param rate_limit: Enable or disable the built-in rate limiter (default ``True``).
+    :param rate_limit_max_requests: Max requests allowed in the sliding window (default 20).
+    :param rate_limit_window: Sliding window size in seconds (default 10.0).
     """
 
     model_config = {"env_prefix": "ETORO_"}
@@ -40,3 +45,6 @@ class EToroConfig(BaseSettings):
     timeout: float = DEFAULT_TIMEOUT
     retry_attempts: int = Field(default=DEFAULT_RETRY_ATTEMPTS, ge=0)
     retry_delay: float = Field(default=DEFAULT_RETRY_DELAY, gt=0)
+    rate_limit: bool = True
+    rate_limit_max_requests: int = Field(default=DEFAULT_RATE_LIMIT_MAX_REQUESTS, ge=1)
+    rate_limit_window: float = Field(default=DEFAULT_RATE_LIMIT_WINDOW, gt=0)

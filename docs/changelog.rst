@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v0.1.3 (2026-02-27)
+--------------------
+
+- Make rate limiter configurable via ``EToroConfig`` fields and environment
+  variables (``ETORO_RATE_LIMIT``, ``ETORO_RATE_LIMIT_MAX_REQUESTS``,
+  ``ETORO_RATE_LIMIT_WINDOW``)
+- Allow disabling rate limiting entirely by setting ``rate_limit=False``
+- ``HttpClient`` now builds ``RateLimiterOptions`` from config when no explicit
+  ``rate_limiter`` argument is provided
+
 v0.1.2 (2026-02-26)
 --------------------
 

@@ -52,11 +52,17 @@ class HttpClient:
         self._config = config
         self._client = httpx.AsyncClient(timeout=config.timeout)
 
-        if rate_limiter is False:
+        if rate_limiter is False or not config.rate_limit:
             self._rate_limiter: RateLimiter | None = None
+        elif isinstance(rate_limiter, RateLimiterOptions):
+            self._rate_limiter = RateLimiter(rate_limiter)
         else:
-            opts = rate_limiter if isinstance(rate_limiter, RateLimiterOptions) else None
-            self._rate_limiter = RateLimiter(opts)
+            self._rate_limiter = RateLimiter(
+                RateLimiterOptions(
+                    max_requests=config.rate_limit_max_requests,
+                    window_s=config.rate_limit_window,
+                )
+            )
 
     async def request(self, options: RequestOptions, response_type: type | None = None) -> Any:
         request_id = options.request_id or generate_uuid()
