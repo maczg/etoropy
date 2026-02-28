@@ -48,12 +48,12 @@ class InstrumentSearchResponse(BaseModel):
 
 
 class InstrumentImage(BaseModel):
-    instrument_id: int = Field(alias="instrumentId")
-    width: int
-    height: int
-    uri: str
-    background_color: str = Field("", alias="backgroundColor")
-    text_color: str = Field("", alias="textColor")
+    instrument_id: int = Field(alias="instrumentID")
+    width: int | None = None
+    height: int | None = None
+    uri: str | None = None
+    background_color: str | None = Field(None, alias="backgroundColor")
+    text_color: str | None = Field(None, alias="textColor")
 
 
 class InstrumentDisplayData(BaseModel):
@@ -156,20 +156,33 @@ class InstrumentTypesResponse(BaseModel):
 class StocksIndustry(BaseModel):
     model_config = {"extra": "allow"}
 
-    stocks_industry_id: int = Field(alias="stocksIndustryId")
-    name: str = ""
+    stocks_industry_id: int = Field(alias="industryID")
+    name: str = Field("", alias="industryName")
 
 
 class StocksIndustriesResponse(BaseModel):
     stocks_industries: list[StocksIndustry] = Field(default_factory=list, alias="stocksIndustries")
 
 
+class ClosingPriceInterval(BaseModel):
+    price: float
+    date: str = ""
+
+
+class ClosingPriceIntervals(BaseModel):
+    daily: ClosingPriceInterval
+    weekly: ClosingPriceInterval
+    monthly: ClosingPriceInterval
+
+
 class ClosingPrice(BaseModel):
     model_config = {"extra": "allow"}
 
     instrument_id: int = Field(alias="instrumentId")
-    closing_price: float = Field(alias="closingPrice")
+    official_closing_price: float = Field(alias="officialClosingPrice")
+    is_market_open: bool = Field(False, alias="isMarketOpen")
+    closing_prices: ClosingPriceIntervals = Field(alias="closingPrices")
 
 
 class ClosingPricesResponse(BaseModel):
-    closing_prices: list[ClosingPrice] = Field(default_factory=list, alias="closingPrices")
+    closing_prices: list[ClosingPrice] = Field(default_factory=list)

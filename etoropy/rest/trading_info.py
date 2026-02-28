@@ -24,6 +24,7 @@ class TradingInfoClient(BaseRestClient):
 
     def __init__(self, http: HttpClient, mode: TradingMode) -> None:
         super().__init__(http)
+        self._mode = mode
         if mode == "demo":
             self._info_prefix = f"{API_PREFIX}/trading/info/demo"
             self._portfolio_path = f"{API_PREFIX}/trading/info/demo/portfolio"
@@ -55,6 +56,9 @@ class TradingInfoClient(BaseRestClient):
             query["page"] = page
         if page_size is not None:
             query["pageSize"] = page_size
+        # Trade history is only available for real accounts
+        if self._mode == "demo":
+            return []
         data = await self._get(f"{API_PREFIX}/trading/info/trade/history", query)
         if isinstance(data, list):
             return [TradeHistoryEntry.model_validate(item) for item in data]

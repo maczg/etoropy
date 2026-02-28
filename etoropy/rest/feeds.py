@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any
 
 from ..config.constants import API_PREFIX
-from ..models.feeds import FeedResponse
 from ._base import BaseRestClient
 
 
@@ -18,28 +17,29 @@ class FeedsClient(BaseRestClient):
         self,
         instrument_id: int,
         *,
-        page: int | None = None,
-        page_size: int | None = None,
-    ) -> FeedResponse:
+        take: int | None = None,
+        offset: int | None = None,
+    ) -> Any:
         query: dict[str, Any] = {}
-        if page is not None:
-            query["page"] = page
-        if page_size is not None:
-            query["pageSize"] = page_size
-        data = await self._get(f"{API_PREFIX}/feeds/instruments/{instrument_id}", query or None)
-        return FeedResponse.model_validate(data)
+        if take is not None:
+            query["take"] = take
+        if offset is not None:
+            query["offset"] = offset
+        return await self._get(f"{API_PREFIX}/feeds/instrument/{instrument_id}", query or None)
 
     async def get_user_feed(
         self,
         user_id: int,
         *,
-        page: int | None = None,
-        page_size: int | None = None,
-    ) -> FeedResponse:
+        requester_user_id: int | str | None = None,
+        take: int | None = None,
+        offset: int | None = None,
+    ) -> Any:
         query: dict[str, Any] = {}
-        if page is not None:
-            query["page"] = page
-        if page_size is not None:
-            query["pageSize"] = page_size
-        data = await self._get(f"{API_PREFIX}/feeds/users/{user_id}", query or None)
-        return FeedResponse.model_validate(data)
+        if requester_user_id is not None:
+            query["requesterUserId"] = requester_user_id
+        if take is not None:
+            query["take"] = take
+        if offset is not None:
+            query["offset"] = offset
+        return await self._get(f"{API_PREFIX}/feeds/user/{user_id}", query or None)
