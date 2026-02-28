@@ -291,10 +291,7 @@ After implementing the fix, update the version in `pyproject.toml`:
 git add pyproject.toml docs/changelog.rst
 git commit -m "chore(hotfix): bump version to vX.Y.Z
 
-Critical fix for $ARGUMENTS
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>"
+Critical fix for $ARGUMENTS"
 ```
 
 ### 8. Create Emergency PR
