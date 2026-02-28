@@ -1,6 +1,17 @@
 Changelog
 =========
 
+v0.1.5 (2026-02-28)
+--------------------
+
+- Fix SDK endpoint paths verified against real eToro API and add comprehensive
+  integration test suite (41 tests covering all REST sub-clients)
+- Make ``InstrumentImage`` ``uri`` and ``color`` fields nullable to match actual
+  API responses
+- Align ``InstrumentImage`` and ``ClosingPrice`` models with actual API response
+  schemas
+- Add project badges to README
+
 v0.1.4 (2026-02-27)
 --------------------
 
