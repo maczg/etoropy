@@ -156,8 +156,8 @@ class InstrumentTypesResponse(BaseModel):
 class StocksIndustry(BaseModel):
     model_config = {"extra": "allow"}
 
-    stocks_industry_id: int = Field(alias="stocksIndustryId")
-    name: str = ""
+    stocks_industry_id: int = Field(alias="industryID")
+    name: str = Field("", alias="industryName")
 
 
 class StocksIndustriesResponse(BaseModel):

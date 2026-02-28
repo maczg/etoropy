@@ -8,13 +8,16 @@ from ._base import BaseRestClient
 
 class WatchlistsClient(BaseRestClient):
     async def get_user_watchlists(self) -> list[Any]:
-        return cast(list[Any], await self._get(f"{API_PREFIX}/watchlists"))
+        data = await self._get(f"{API_PREFIX}/watchlists")
+        if isinstance(data, dict) and "watchlists" in data:
+            return cast(list[Any], data["watchlists"])
+        return cast(list[Any], data)
 
     async def get_watchlist(self, watchlist_id: int) -> Any:
         return await self._get(f"{API_PREFIX}/watchlists/{watchlist_id}")
 
     async def get_default_watchlist_items(self) -> list[Any]:
-        return cast(list[Any], await self._get(f"{API_PREFIX}/watchlists/default/items"))
+        return cast(list[Any], await self._get(f"{API_PREFIX}/watchlists/default-watchlists/items"))
 
     async def create_watchlist(self, name: str, items: list[int] | None = None) -> Any:
         body: dict[str, Any] = {"name": name}

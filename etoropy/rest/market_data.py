@@ -161,7 +161,7 @@ class MarketDataClient(BaseRestClient):
         return ClosingPricesResponse.model_validate(data)
 
     async def get_stocks_industries(self) -> StocksIndustriesResponse:
-        data = await self._get(f"{API_PREFIX}/market-data/instruments/industries")
+        data = await self._get(f"{API_PREFIX}/market-data/stocks-industries")
         return StocksIndustriesResponse.model_validate(data)
 
     async def get_exchanges(self) -> ExchangesResponse:
