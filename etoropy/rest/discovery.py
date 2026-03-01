@@ -14,7 +14,7 @@ class DiscoveryClient(BaseRestClient):
         if isinstance(data, dict) and "CuratedLists" in data:
             return cast(list[Any], data["CuratedLists"])
         if isinstance(data, list):
-            return cast(list[Any], data)
+            return data
         return []
 
     async def get_market_recommendations(self) -> list[Any]:
