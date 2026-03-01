@@ -82,9 +82,7 @@ git commit -m "chore(release): bump version to ${ARGUMENTS#v}
 
 - Updated pyproject.toml version
 - Generated docs/changelog.rst from commits
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>"
+"
 
 # Push to remote with tracking
 git push -u origin release/$ARGUMENTS

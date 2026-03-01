@@ -71,6 +71,24 @@ def test_parse_unknown_topic() -> None:
     assert parsed[0].type == "unknown"
 
 
+def test_parse_instrument_heartbeat_skipped() -> None:
+    """Messages with only Date+PriceRateID (no Ask/Bid) should be skipped."""
+    envelope = WsEnvelope.model_validate(
+        {
+            "messages": [
+                {
+                    "topic": "instrument:100000",
+                    "content": '{"Date": "2026-03-01T09:38:19Z", "PriceRateID": "133989539186"}',
+                    "id": "msg-hb",
+                    "type": "Trading.InstrumentRate",
+                }
+            ]
+        }
+    )
+    parsed = parse_messages(envelope)
+    assert len(parsed) == 0
+
+
 def test_parse_envelope_from_string() -> None:
     raw = (
         '{"messages": [{"topic": "instrument:999",'

@@ -154,7 +154,8 @@ class HttpClient:
         if not response.is_success:
             body = response.text
             raise EToroApiError(
-                f"API request failed: {response.status_code} {response.reason_phrase} | {options.method} {url} | {body[:200] if body else ''}",
+                f"API request failed: {response.status_code} {response.reason_phrase}"
+                f" | {options.method} {url} | {body[:200] if body else ''}",
                 status_code=response.status_code,
                 response_body=body,
                 request_id=request_id,

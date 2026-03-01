@@ -1,10 +1,15 @@
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass
 from typing import Any
 
+from pydantic import ValidationError
+
 from ..models.websocket import WsEnvelope, WsInstrumentRate, WsPrivateEvent
+
+logger = logging.getLogger("etoropy")
 
 
 @dataclass
@@ -46,7 +51,13 @@ def parse_messages(envelope: WsEnvelope) -> list[ParsedMessage]:
         if msg.topic.startswith("instrument:"):
             parts = msg.topic.split(":")
             instrument_id = int(parts[1])
-            rate = WsInstrumentRate.model_validate(json.loads(msg.content))
+            content = json.loads(msg.content)
+            try:
+                rate = WsInstrumentRate.model_validate(content)
+            except ValidationError:
+                # Heartbeat/notification messages with only Date+PriceRateID — skip
+                logger.debug("Skipping instrument message without rate data: %s", content)
+                continue
             results.append(
                 ParsedMessage(
                     type="instrument:rate",

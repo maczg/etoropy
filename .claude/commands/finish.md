@@ -97,10 +97,7 @@ git pull origin develop
 # Merge feature branch (no fast-forward)
 git merge --no-ff feature/$NAME -m "Merge feature/$NAME into develop
 
-$(git log develop..feature/$NAME --oneline)
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>"
+$(git log develop..feature/$NAME --oneline)"
 
 # Push to remote
 git push origin develop
@@ -160,10 +157,7 @@ git pull origin main
 git merge --no-ff release/$VERSION -m "Merge release/$VERSION into main
 
 Release notes:
-$(cat docs/changelog.rst | sed -n "/## \[$VERSION\]/,/## \[/p" | head -n -1)
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>"
+$(cat docs/changelog.rst | sed -n "/## \[$VERSION\]/,/## \[/p" | head -n -1)"
 
 # Create tag on main (unless --no-tag)
 git tag -a $VERSION -m "Release $VERSION
@@ -176,10 +170,7 @@ git push origin main --tags
 # Merge back to develop
 git checkout develop
 git pull origin develop
-git merge --no-ff release/$VERSION -m "Merge release/$VERSION back into develop
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>"
+git merge --no-ff release/$VERSION -m "Merge release/$VERSION back into develop"
 
 # Push develop
 git push origin develop
@@ -244,10 +235,7 @@ git checkout main
 git pull origin main
 git merge --no-ff hotfix/$NAME -m "Merge hotfix/$NAME into main
 
-Critical fix for: $NAME
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>"
+Critical fix for: $NAME"
 
 # Create tag on main (unless --no-tag)
 git tag -a $NEW_VERSION -m "Hotfix $NEW_VERSION: $NAME
@@ -260,10 +248,7 @@ git push origin main --tags
 # Merge back to develop
 git checkout develop
 git pull origin develop
-git merge --no-ff hotfix/$NAME -m "Merge hotfix/$NAME back into develop
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>"
+git merge --no-ff hotfix/$NAME -m "Merge hotfix/$NAME back into develop"
 
 # Push develop
 git push origin develop
