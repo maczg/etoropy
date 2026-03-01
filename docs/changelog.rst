@@ -1,6 +1,17 @@
 Changelog
 =========
 
+v0.1.6 (2026-03-01)
+--------------------
+
+- Handle WebSocket instrument heartbeat messages that lack bid/ask data
+  instead of logging parse errors
+- Add ``Makefile`` with ``make check`` to reproduce CI steps locally
+  (lint, format, typecheck, test)
+- Add public observer demobot notebook example
+- Fix redundant cast in discovery client (mypy strict)
+- Fix line-too-long lint error in HTTP client error message
+
 v0.1.5 (2026-02-28)
 --------------------
 
