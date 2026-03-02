@@ -60,6 +60,7 @@ def test_instrument_search_response() -> None:
                 "oneYearPriceChange": 30.0,
                 "internalAssetClassId": 1,
                 "internalAssetClassName": "Stocks",
+                "internalSymbolFull": "AAPL",
                 "logo35x35": "",
                 "logo50x50": "",
                 "logo150x150": "",
@@ -73,6 +74,7 @@ def test_instrument_search_response() -> None:
     assert len(resp.items) == 1
     assert resp.items[0].instrument_id == 1001
     assert resp.items[0].symbol == "AAPL"
+    assert resp.items[0].internal_symbol_full == "AAPL"
 
 
 def test_market_order_request_serialization() -> None:
