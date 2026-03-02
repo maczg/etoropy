@@ -1,6 +1,19 @@
 Changelog
 =========
 
+v0.1.7 (2026-03-02)
+--------------------
+
+- Fix ``search_instruments`` ``fields`` parameter: make it optional so omitting
+  it lets the API return all available fields instead of forcing a broken
+  projection
+- Add ``internal_symbol_full`` field to ``InstrumentSearchItem`` model — the key
+  field used by the eToro API for exact symbol matching
+- Remove broken ``fields="instrumentId"`` projection from ``InstrumentResolver``
+  search calls
+- Document that the search endpoint is for ID resolution only; display metadata
+  (``displayname``, ``exchangeID``) requires ``get_instruments()``
+
 v0.1.6 (2026-03-01)
 --------------------
 
