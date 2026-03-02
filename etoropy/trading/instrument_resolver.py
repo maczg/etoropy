@@ -130,7 +130,6 @@ class InstrumentResolver:
             return cached
 
         result = await self._market_data.search_instruments(
-            fields="instrumentId",
             internal_symbol_full=upper,
             page_size=5,
         )
@@ -143,7 +142,6 @@ class InstrumentResolver:
             return instrument_id
 
         text_result = await self._market_data.search_instruments(
-            fields="instrumentId",
             search_text=symbol_or_id,
             page_size=10,
         )

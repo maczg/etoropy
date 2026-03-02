@@ -29,7 +29,7 @@ class MarketDataClient(BaseRestClient):
 
     async def search_instruments(
         self,
-        fields: str,
+        fields: str | None = None,
         *,
         search_text: str | None = None,
         internal_symbol_full: str | None = None,
@@ -37,7 +37,24 @@ class MarketDataClient(BaseRestClient):
         page_number: int | None = None,
         sort: str | None = None,
     ) -> InstrumentSearchResponse:
-        query: dict[str, Any] = {"fields": fields}
+        """Search for instruments by text or exact symbol.
+
+        This endpoint is designed for **instrument ID resolution** — it
+        reliably returns ``instrumentId`` and ``internalSymbolFull`` but
+        does *not* populate display metadata such as ``displayname``,
+        ``exchangeID``, or ``symbol``.  For those fields use
+        :meth:`get_instruments` instead.
+
+        :param fields: Optional projection (comma-separated field names).
+        :param search_text: Free-text search query.
+        :param internal_symbol_full: Exact ticker symbol filter (e.g. ``"AAPL"``).
+        :param page_size: Number of results per page.
+        :param page_number: Page number (0-based).
+        :param sort: Sort expression.
+        """
+        query: dict[str, Any] = {}
+        if fields is not None:
+            query["fields"] = fields
         if search_text is not None:
             query["searchText"] = search_text
         if internal_symbol_full is not None:

@@ -32,24 +32,28 @@ pytestmark = pytest.mark.integration
 class TestSearchInstruments:
     async def test_search_by_text(self, rest_client: RestClient) -> None:
         result = await rest_client.market_data.search_instruments(
-            fields="instrumentId,symbol,displayname",
             search_text="Apple",
             page_size=5,
         )
         assert isinstance(result, InstrumentSearchResponse)
         assert len(result.items) > 0
-        first = result.items[0]
+        # Filter out hidden/meta items (e.g. crypto market summary with ID -100000)
+        instruments = [i for i in result.items if i.instrument_id > 0]
+        assert len(instruments) > 0
+        first = instruments[0]
         assert isinstance(first, InstrumentSearchItem)
-        assert first.instrument_id != 0
+        assert first.instrument_id > 0
 
     async def test_search_by_symbol(self, rest_client: RestClient) -> None:
+        """Search endpoint is for ID resolution; use get_instruments() for metadata."""
         result = await rest_client.market_data.search_instruments(
-            fields="instrumentId,symbol,displayname",
             internal_symbol_full="AAPL",
         )
         assert isinstance(result, InstrumentSearchResponse)
         assert len(result.items) > 0
-        assert any(item.instrument_id == AAPL_ID for item in result.items)
+        first = result.items[0]
+        assert first.internal_symbol_full == "AAPL"
+        assert first.instrument_id == AAPL_ID
 
 
 class TestGetInstruments:

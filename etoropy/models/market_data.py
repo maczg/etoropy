@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class InstrumentSearchParams(BaseModel):
-    fields: str
+    fields: str | None = None
     search_text: str | None = None
     internal_symbol_full: str | None = None
     page_size: int | None = None
@@ -13,6 +13,16 @@ class InstrumentSearchParams(BaseModel):
 
 
 class InstrumentSearchItem(BaseModel):
+    """A single item from the ``/market-data/search`` endpoint.
+
+    The search API reliably returns ``instrument_id`` and
+    ``internal_symbol_full``.  Most other fields (``displayname``,
+    ``exchange_id``, ``symbol``, etc.) are **not populated** by the API
+    and will keep their default values.  Use
+    :class:`InstrumentDisplayData` (via ``get_instruments()``) for full
+    display metadata.
+    """
+
     model_config = {"extra": "allow"}
 
     instrument_id: int = Field(alias="instrumentId")
@@ -37,6 +47,7 @@ class InstrumentSearchItem(BaseModel):
     internal_asset_class_name: str = Field("", alias="internalAssetClassName")
     logo_35x35: str = Field("", alias="logo35x35")
     logo_50x50: str = Field("", alias="logo50x50")
+    internal_symbol_full: str = Field("", alias="internalSymbolFull")
     logo_150x150: str = Field("", alias="logo150x150")
 
 
